@@ -1,5 +1,14 @@
 # Polyglot Engineer Templates
 
+# Polyglot Engineer Templates
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Templates](https://img.shields.io/badge/templates-5-blue.svg)](justfile-templates/)
+[![GitHub stars](https://img.shields.io/github/stars/dr-saad-la/polyglot-engineer-templates.svg?style=social&label=Star)](https://github.com/dr-saad-la/polyglot-engineer-templates)
+[![GitHub forks](https://img.shields.io/github/forks/dr-saad-la/polyglot-engineer-templates.svg?style=social&label=Fork)](https://github.com/dr-saad-la/polyglot-engineer-templates/fork)
+[![Justfile Validation](https://github.com/dr-saad-la/polyglot-engineer-templates/actions/workflows/validate-justfiles.yml/badge.svg)](https://github.com/dr-saad-la/polyglot-engineer-templates/actions/workflows/validate-justfiles.yml)
+
+
 **Production-ready templates for The Polyglot Engineer ecosystem.**
 
 This repository is part of a three-repo ecosystem:
