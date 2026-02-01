@@ -1,0 +1,231 @@
+# justfile - ML/Data Science project automation
+# Download: curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/ml/justfile
+# Documentation: https://github.com/dr-saad-la/polyglot-engineer-templates/tree/main/justfile-templates/ml
+
+# =================================
+# Configuration
+# =================================
+python_version := "3.12"
+project_name := "ml-project"
+data_dir := "data"
+models_dir := "models"
+notebooks_dir := "notebooks"
+
+# =================================
+# Help
+# =================================
+
+default:
+    @just --list
+
+# =================================
+# Setup
+# =================================
+
+install:
+    uv sync
+
+# Setup project structure
+setup: install
+    mkdir -p {{data_dir}}/{raw,processed,external}
+    mkdir -p {{models_dir}}
+    mkdir -p {{notebooks_dir}}
+    mkdir -p reports/figures
+    uv run pre-commit install
+    @echo "✓ ML project ready"
+
+# =================================
+# Data Management
+# =================================
+
+# Download raw data
+data-download:
+    @echo "Downloading data..."
+    uv run python scripts/download_data.py
+
+# Process raw data
+data-process:
+    @echo "Processing data..."
+    uv run python scripts/process_data.py
+
+# Validate data quality
+data-validate:
+    @echo "Validating data..."
+    uv run python scripts/validate_data.py
+
+# Complete data pipeline
+data-pipeline: data-download data-process data-validate
+    @echo "✓ Data pipeline complete"
+
+# =================================
+# Training
+# =================================
+
+# Train model
+train:
+    uv run python scripts/train.py
+
+# Train with specific config
+train-config CONFIG:
+    uv run python scripts/train.py --config {{CONFIG}}
+
+# Hyperparameter tuning
+tune:
+    uv run python scripts/tune.py
+
+# Resume training from checkpoint
+train-resume CHECKPOINT:
+    uv run python scripts/train.py --resume {{CHECKPOINT}}
+
+# =================================
+# Evaluation
+# =================================
+
+# Evaluate model
+evaluate MODEL:
+    uv run python scripts/evaluate.py --model {{MODEL}}
+
+# Generate predictions
+predict INPUT OUTPUT:
+    uv run python scripts/predict.py --input {{INPUT}} --output {{OUTPUT}}
+
+# Compare models
+compare *MODELS:
+    uv run python scripts/compare_models.py {{MODELS}}
+
+# =================================
+# Notebooks
+# =================================
+
+# Start Jupyter Lab
+jupyter:
+    uv run jupyter lab --notebook-dir={{notebooks_dir}}
+
+# Start Jupyter Notebook
+notebook:
+    uv run jupyter notebook --notebook-dir={{notebooks_dir}}
+
+# Convert notebook to script
+nb-to-script NOTEBOOK:
+    uv run jupyter nbconvert --to script {{NOTEBOOK}}
+
+# Execute notebook
+nb-run NOTEBOOK:
+    uv run jupyter nbconvert --execute --to notebook --inplace {{NOTEBOOK}}
+
+# =================================
+# Experiment Tracking
+# =================================
+
+# Start MLflow UI
+mlflow-ui:
+    uv run mlflow ui
+
+# Start TensorBoard
+tensorboard:
+    uv run tensorboard --logdir=runs
+
+# =================================
+# Code Quality
+# =================================
+
+format:
+    uv run ruff format .
+
+lint:
+    uv run ruff check .
+
+types:
+    uv run mypy src/
+
+check: format lint types
+    @echo "✓ All checks passed"
+
+# =================================
+# Testing
+# =================================
+
+test:
+    uv run pytest tests/ -v
+
+test-cov:
+    uv run pytest tests/ --cov=src --cov-report=html
+
+# Test data pipeline
+test-data:
+    uv run pytest tests/data/ -v
+
+# Test models
+test-models:
+    uv run pytest tests/models/ -v
+
+# =================================
+# Reproducibility
+# =================================
+
+# Create reproducible environment
+freeze:
+    uv pip freeze > requirements-lock.txt
+
+# Generate DVC pipeline
+dvc-pipeline:
+    dvc repro
+
+# Track data with DVC
+dvc-add FILE:
+    dvc add {{FILE}}
+
+# =================================
+# Cleanup
+# =================================
+
+clean:
+    rm -rf __pycache__ .pytest_cache .ruff_cache .mypy_cache
+    find . -type f -name "*.pyc" -delete
+    find . -type d -name "__pycache__" -delete
+    rm -rf .coverage htmlcov
+
+# Clean data artifacts
+clean-data:
+    rm -rf {{data_dir}}/processed/*
+    @echo "✓ Processed data cleaned"
+
+# Clean model artifacts
+clean-models:
+    rm -rf {{models_dir}}/*
+    rm -rf runs/*
+    @echo "✓ Model artifacts cleaned"
+
+# Deep clean (dangerous!)
+clean-all: clean clean-data clean-models
+    rm -rf .venv
+    @echo "✓ Deep clean complete"
+
+# =================================
+# Documentation
+# =================================
+
+# Generate model card
+docs-model MODEL:
+    uv run python scripts/generate_model_card.py --model {{MODEL}}
+
+# Build documentation
+docs-build:
+    uv run mkdocs build
+
+# Serve documentation
+docs-serve:
+    uv run mkdocs serve
+
+# =================================
+# Utilities
+# =================================
+
+info:
+    @echo "ML Project: {{project_name}}"
+    @echo "Python: {{python_version}}"
+    @echo "Data: {{data_dir}}/"
+    @echo "Models: {{models_dir}}/"
+    @echo "Notebooks: {{notebooks_dir}}/"
+    @echo ""
+    @just --list

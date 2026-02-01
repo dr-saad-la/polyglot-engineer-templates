@@ -1,0 +1,118 @@
+# justfile - Python project automation
+# Download: curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/python/justfile
+# Documentation: https://github.com/dr-saad-la/polyglot-engineer-templates/tree/main/justfile-templates/python
+
+# =================================
+# Configuration
+# =================================
+python_version := "3.12"
+app_name := "myapp"
+
+# =================================
+# Help
+# =================================
+
+# Show available commands
+default:
+    @just --list
+
+# =================================
+# Setup
+# =================================
+
+# Install dependencies
+install:
+    uv sync
+
+# Setup project for first time
+setup: install
+    uv run pre-commit install
+    @echo "✓ Project ready"
+
+# =================================
+# Development
+# =================================
+
+# Start development server
+dev:
+    uv run python -m {{app_name}}
+
+# Run Python REPL with project context
+repl:
+    uv run python
+
+# =================================
+# Code Quality
+# =================================
+
+# Format code
+format:
+    uv run ruff format .
+
+# Lint code
+lint:
+    uv run ruff check .
+
+# Type check
+types:
+    uv run mypy {{app_name}}
+
+# Run all checks
+check: format lint types
+    @echo "✓ All checks passed"
+
+# =================================
+# Testing
+# =================================
+
+# Run tests
+test:
+    uv run pytest tests/ -v
+
+# Run tests with coverage
+test-cov:
+    uv run pytest tests/ --cov={{app_name}} --cov-report=html
+
+# Run tests in watch mode
+test-watch:
+    uv run pytest-watch tests/
+
+# =================================
+# Cleanup
+# =================================
+
+# Clean build artifacts
+clean:
+    rm -rf __pycache__ .pytest_cache .ruff_cache .mypy_cache
+    find . -type f -name "*.pyc" -delete
+    find . -type d -name "__pycache__" -delete
+    rm -rf .coverage htmlcov dist build *.egg-info
+
+# Clean and reinstall
+reset: clean
+    rm -rf .venv
+    uv sync
+
+# =================================
+# Build & Deploy
+# =================================
+
+# Build package
+build: check
+    uv build
+
+# Deploy (customize for your needs)
+deploy ENV: check
+    @echo "Deploying to {{ENV}}..."
+    # Add your deployment commands here
+
+# =================================
+# Utilities
+# =================================
+
+# Show project info
+info:
+    @echo "Project: {{app_name}}"
+    @echo "Python: {{python_version}}"
+    @echo ""
+    @just --list

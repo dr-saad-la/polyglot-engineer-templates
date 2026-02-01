@@ -1,0 +1,148 @@
+# justfile - CLI application automation
+# Download: curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/cli/justfile
+# Documentation: https://github.com/dr-saad-la/polyglot-engineer-templates/tree/main/justfile-templates/cli
+
+# =================================
+# Configuration
+# =================================
+python_version := "3.12"
+app_name := "mycli"
+entry_point := "{{app_name}}.cli:main"
+
+# =================================
+# Help
+# =================================
+
+default:
+    @just --list
+
+# =================================
+# Setup
+# =================================
+
+install:
+    uv sync
+
+# Install CLI in editable mode
+install-dev:
+    uv pip install -e .
+
+setup: install install-dev
+    uv run pre-commit install
+    @echo "✓ CLI project ready"
+
+# =================================
+# Development
+# =================================
+
+# Run CLI application
+run *ARGS:
+    uv run python -m {{app_name}} {{ARGS}}
+
+# Run with specific command
+run-cmd CMD *ARGS:
+    uv run python -m {{app_name}} {{CMD}} {{ARGS}}
+
+# Show CLI help
+help:
+    uv run python -m {{app_name}} --help
+
+# =================================
+# Code Quality
+# =================================
+
+format:
+    uv run ruff format .
+
+lint:
+    uv run ruff check .
+
+types:
+    uv run mypy {{app_name}}
+
+check: format lint types
+    @echo "✓ All checks passed"
+
+# =================================
+# Testing
+# =================================
+
+test:
+    uv run pytest tests/ -v
+
+test-cov:
+    uv run pytest tests/ --cov={{app_name}} --cov-report=html
+
+# Test CLI commands
+test-cli:
+    uv run pytest tests/cli/ -v
+
+# =================================
+# Build & Distribution
+# =================================
+
+# Build distribution packages
+build: check test
+    uv build
+
+# Build wheel only
+build-wheel: check
+    uv build --wheel
+
+# Install from built package
+install-package:
+    uv pip install dist/*.whl --force-reinstall
+
+# =================================
+# Documentation
+# =================================
+
+# Generate CLI documentation
+docs-gen:
+    uv run python -m {{app_name}} --help > docs/cli-help.txt
+
+# Build documentation
+docs-build:
+    uv run mkdocs build
+
+# Serve documentation
+docs-serve:
+    uv run mkdocs serve
+
+# =================================
+# Cleanup
+# =================================
+
+clean:
+    rm -rf __pycache__ .pytest_cache .ruff_cache .mypy_cache
+    find . -type f -name "*.pyc" -delete
+    find . -type d -name "__pycache__" -delete
+    rm -rf .coverage htmlcov dist build *.egg-info
+
+reset: clean
+    rm -rf .venv
+    uv sync
+
+# =================================
+# Release
+# =================================
+
+# Create new version tag
+tag VERSION:
+    git tag -a v{{VERSION}} -m "Release version {{VERSION}}"
+    git push origin v{{VERSION}}
+
+# Publish to PyPI (requires credentials)
+publish: build
+    uv publish
+
+# =================================
+# Utilities
+# =================================
+
+info:
+    @echo "CLI Project: {{app_name}}"
+    @echo "Python: {{python_version}}"
+    @echo "Entry Point: {{entry_point}}"
+    @echo ""
+    @just --list

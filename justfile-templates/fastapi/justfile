@@ -1,0 +1,164 @@
+# justfile - FastAPI project automation
+# Download: curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/fastapi/justfile
+# Documentation: https://github.com/dr-saad-la/polyglot-engineer-templates/tree/main/justfile-templates/fastapi
+
+# =================================
+# Configuration
+# =================================
+python_version := "3.12"
+app_name := "api"
+host := "0.0.0.0"
+port := "8000"
+
+# =================================
+# Help
+# =================================
+
+default:
+    @just --list
+
+# =================================
+# Setup
+# =================================
+
+install:
+    uv sync
+
+setup: install
+    uv run pre-commit install
+    @echo "✓ FastAPI project ready"
+
+# =================================
+# Development
+# =================================
+
+# Start development server with auto-reload
+dev:
+    uv run uvicorn {{app_name}}.main:app --reload --host {{host}} --port {{port}}
+
+# Start development server with custom host/port
+dev-custom HOST PORT:
+    uv run uvicorn {{app_name}}.main:app --reload --host {{HOST}} --port {{PORT}}
+
+# Open API docs in browser
+docs:
+    @echo "Opening API docs..."
+    open http://\{\{host\}\}:\{\{port\}\}/docs
+
+# =================================
+# Code Quality
+# =================================
+
+format:
+    uv run ruff format .
+
+lint:
+    uv run ruff check .
+
+types:
+    uv run mypy {{app_name}}
+
+check: format lint types
+    @echo "✓ All checks passed"
+
+# =================================
+# Testing
+# =================================
+
+# Run tests
+test:
+    uv run pytest tests/ -v
+
+# Run tests with coverage
+test-cov:
+    uv run pytest tests/ --cov={{app_name}} --cov-report=html --cov-report=term
+
+# Run API integration tests
+test-integration:
+    uv run pytest tests/integration/ -v
+
+# Test API endpoints
+test-api:
+    uv run pytest tests/api/ -v -s
+
+# =================================
+# Database
+# =================================
+
+# Create database migration
+db-migrate MESSAGE:
+    uv run alembic revision --autogenerate -m "{{MESSAGE}}"
+
+# Apply database migrations
+db-upgrade:
+    uv run alembic upgrade head
+
+# Rollback last migration
+db-downgrade:
+    uv run alembic downgrade -1
+
+# Reset database (dangerous!)
+db-reset:
+    uv run alembic downgrade base
+    uv run alembic upgrade head
+
+# =================================
+# Docker
+# =================================
+
+# Build Docker image
+docker-build:
+    docker build -t {{app_name}}:latest .
+
+# Run Docker container
+docker-run:
+    docker run -p {{port}}:{{port}} {{app_name}}:latest
+
+# Build and run with docker-compose
+docker-up:
+    docker-compose up --build
+
+# Stop docker-compose services
+docker-down:
+    docker-compose down
+
+# =================================
+# Cleanup
+# =================================
+
+clean:
+    rm -rf __pycache__ .pytest_cache .ruff_cache .mypy_cache
+    find . -type f -name "*.pyc" -delete
+    find . -type d -name "__pycache__" -delete
+    rm -rf .coverage htmlcov dist build *.egg-info
+
+reset: clean
+    rm -rf .venv
+    docker-compose down -v
+    uv sync
+
+# =================================
+# Production
+# =================================
+
+# Build for production
+build-prod: check test
+    uv build
+    docker build -t {{app_name}}:production .
+
+# Deploy to production
+deploy-prod: build-prod
+    @echo "Deploying to production..."
+    # Add your deployment commands here
+
+# =================================
+# Utilities
+# =================================
+
+info:
+    @echo "FastAPI Project: {{app_name}}"
+    @echo "Python: {{python_version}}"
+    @echo "Dev Server: http://{{host}}:{{port}}"
+    @echo "API Docs: http://{{host}}:{{port}}/docs"
+    @echo ""
+    @just --list

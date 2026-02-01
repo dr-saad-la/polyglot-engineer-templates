@@ -1,0 +1,59 @@
+name: Validate Justfile Templates
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install Just
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+          just --version
+      
+      - name: Validate Python template
+        run: |
+          echo "Validating Python template..."
+          just -f justfile-templates/python/justfile --list
+      
+      - name: Validate FastAPI template
+        run: |
+          echo "Validating FastAPI template..."
+          just -f justfile-templates/fastapi/justfile --list
+      
+      - name: Validate CLI template
+        run: |
+          echo "Validating CLI template..."
+          just -f justfile-templates/cli/justfile --list
+      
+      - name: Validate ML template
+        run: |
+          echo "Validating ML template..."
+          just -f justfile-templates/ml/justfile --list
+      
+      - name: Validate General template
+        run: |
+          echo "Validating General template..."
+          just -f justfile-templates/general/justfile --list
+      
+      - name: Check syntax of all templates
+        run: |
+          echo "Checking syntax of all justfiles..."
+          for template in justfile-templates/*/justfile; do
+            echo "Checking $template..."
+            just -f "$template" --list > /dev/null
+            echo "✓ $template is valid"
+          done
+      
+      - name: Summary
+        run: |
+          echo "✓ All justfile templates validated successfully"

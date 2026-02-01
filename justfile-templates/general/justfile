@@ -1,0 +1,75 @@
+# justfile - Minimal project automation
+# Download: curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/general/justfile
+# Documentation: https://github.com/dr-saad-la/polyglot-engineer-templates/tree/main/justfile-templates/general
+
+# =================================
+# Configuration
+# =================================
+project_name := "my-project"
+
+# =================================
+# Help
+# =================================
+
+# Show available commands
+default:
+    @just --list
+
+# =================================
+# Setup
+# =================================
+
+# Install dependencies
+install:
+    @echo "Installing dependencies..."
+    # Add your install commands here
+
+# Setup project
+setup: install
+    @echo "✓ Project setup complete"
+
+# =================================
+# Development
+# =================================
+
+# Start development
+dev:
+    @echo "Starting development..."
+    # Add your dev server command here
+
+# =================================
+# Testing
+# =================================
+
+# Run tests
+test:
+    @echo "Running tests..."
+    # Add your test command here
+
+# =================================
+# Build
+# =================================
+
+# Build project
+build:
+    @echo "Building project..."
+    # Add your build command here
+
+# =================================
+# Cleanup
+# =================================
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning..."
+    rm -rf dist/ build/
+
+# =================================
+# Utilities
+# =================================
+
+# Show project info
+info:
+    @echo "Project: {{project_name}}"
+    @echo ""
+    @just --list
