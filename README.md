@@ -7,6 +7,10 @@
 [![GitHub stars](https://img.shields.io/github/stars/dr-saad-la/polyglot-engineer-templates.svg?style=social&label=Star)](https://github.com/dr-saad-la/polyglot-engineer-templates)
 [![GitHub forks](https://img.shields.io/github/forks/dr-saad-la/polyglot-engineer-templates.svg?style=social&label=Fork)](https://github.com/dr-saad-la/polyglot-engineer-templates/fork)
 [![Justfile Validation](https://github.com/dr-saad-la/polyglot-engineer-templates/actions/workflows/validate-justfiles.yml/badge.svg)](https://github.com/dr-saad-la/polyglot-engineer-templates/actions/workflows/validate-justfiles.yml)
+[![Issues](https://img.shields.io/github/issues/dr-saad-la/polyglot-engineer-templates)](https://github.com/dr-saad-la/polyglot-engineer-templates/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/dr-saad-la/polyglot-engineer-templates)](https://github.com/dr-saad-la/polyglot-engineer-templates/pulls)
+[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-contributor%20covenant-purple.svg)](CODE_OF_CONDUCT.md)
+[![Security](https://img.shields.io/badge/security-policy-blue.svg)](SECURITY.md)
 
 
 **Production-ready templates for The Polyglot Engineer ecosystem.**
