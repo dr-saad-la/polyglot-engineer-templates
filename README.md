@@ -55,36 +55,42 @@ REST and GraphQL API boilerplates.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Justfile Templates
 
 #### Python
+
 ````bash
 curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/python/justfile
 ````
 
 #### FastAPI
+
 ````bash
 curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/fastapi/justfile
 ````
 
 #### CLI
+
 ````bash
 curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/cli/justfile
 ````
 
 #### ML/Data Science
+
 ````bash
 curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/ml/justfile
 ````
 
 #### General
+
 ````bash
 curl -o justfile https://raw.githubusercontent.com/dr-saad-la/polyglot-engineer-templates/main/justfile-templates/general/justfile
 ````
 
 ### Customize & Use
+
 ````bash
 # 1. Edit configuration variables
 vim justfile
