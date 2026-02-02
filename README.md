@@ -1,7 +1,5 @@
 # Polyglot Engineer Templates
 
-# Polyglot Engineer Templates
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Templates](https://img.shields.io/badge/templates-5-blue.svg)](justfile-templates/)
 [![GitHub stars](https://img.shields.io/github/stars/dr-saad-la/polyglot-engineer-templates.svg?style=social&label=Star)](https://github.com/dr-saad-la/polyglot-engineer-templates)
